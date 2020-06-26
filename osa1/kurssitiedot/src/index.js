@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 
 const Header = (props) => {
+  console.log(props)
   return (
     <div>
       <h1>{props.course}</h1>
@@ -13,6 +14,7 @@ const Header = (props) => {
 
 
 const Part = (props) => {
+  console.log(props)
   return (
     <div>
       <p>{props.part} {props.excer}</p>
@@ -21,41 +23,53 @@ const Part = (props) => {
 }
 
 const Content = (props) => {
+  console.log(props)
   return (
     <div>
-      <Part part = {props.part1} excer = {props.excer1} />
-      <Part part = {props.part2} excer = {props.excer2} />
-      <Part part = {props.part3} excer = {props.excer3} />
+      <Part part = {props.parts[0].name} excer = {props.parts[0].excercises} />
+      <Part part = {props.parts[1].name} excer = {props.parts[1].excercises} />
+      <Part part = {props.parts[2].name} excer = {props.parts[2].excercises} />
     </div>
   )
 }
 
 const Total = (props) => {
+  console.log(props)
   return (
     <div>
-      <p>Number of excercises {props.excer1 + props.excer2 + props.excer3}</p>
+      <p>Number of excercises {props.parts[0].excercises + props.parts[1].excercises + props.parts[2].excercises}</p>
     </div>
   )
 }
 
 const App = () => {
-  const course = 'Half stack application development'
-  const part1 = 'Fundamentals of React'
-  const excercises1 = 10
-  const part2 = 'Using props to pass data'
-  const excercises2 = 7
-  const part3 = 'State of a component'
-  const excercises3 = 14
 
+  const course = {
+    name: 'Half stack application development',
+    parts: [
+    {
+    name: 'Fundamentals of React',
+    excercises: 10
+    },
+
+    {
+      name: 'Using props to pass data',
+      excercises: 7
+    },
+
+    {
+      name: 'State of a component',
+      excercises: 14
+    }
+  ]
+}
   return (
     <div>
-      <Header course={course}/>
+      <Header course={course.name}/>
 
-      <Content part1 = {part1} excer1 = {excercises1} 
-      part2= {part2} excer2 = {excercises2} 
-      part3 = {part3} excer3 = {excercises3} />
+      <Content parts = {course.parts}/>
       
-      <Total excer1 = {excercises1} excer2 = {excercises2} excer3 = {excercises3} />
+      <Total parts = {course.parts} />
     </div>
   )
 }
