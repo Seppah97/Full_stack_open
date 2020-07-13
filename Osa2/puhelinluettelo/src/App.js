@@ -8,8 +8,55 @@ const Render = ({person}) => {
   )
 }
 
+const Persons = (props) => {
+  return (
+    <div>
+      <ul>
+        {props.persons.map(info => 
+        <Render key={info.name} person={info} />
+        )}
+      </ul>
+    </div>
+  )
+}
 
+const Filter = (props) => {
+  return (
+    <div>
+        filter shown with
+        <input 
+          value={props.filter}
+          onChange={props.handleFilterChange}
+        />
+      </div>
+  )
+}
 
+const AddNew = (props) => {
+  return(
+    <form onSubmit={props.addPerson}>
+      <div>
+        name: 
+        <input 
+          value={props.newName}
+          onChange={props.handleNameChange}
+        />
+      </div>
+
+      <div>
+        number:
+        <input 
+          value={props.newNumber}
+          onChange={props.handleNumberChange}/>
+      </div>
+
+      <div>
+        <button type="submit">add</button>
+        
+      </div>
+    </form>
+  )
+}
 
 const App = () => {
   const [ persons, setPersons] = useState([
@@ -66,44 +113,14 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with
-        <input 
-          value={filter}
-          onChange={handleFilterChange}
-        />
-      </div>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
 
       <h2>Add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: 
-          <input 
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-
-        <div>
-          number:
-          <input 
-            value={newNumber}
-            onChange={handleNumberChange}/>
-        </div>
-
-        <div>
-          <button type="submit">add</button>
-          
-        </div>
-      </form>
+      <AddNew addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} 
+      newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       
-      <ul>
-        
-        {filterItems().map(info => 
-        <Render key={info.name} person={info} />
-        )}
-      </ul>
+      <Persons persons={filterItems()} />
 
     </div>
   )
