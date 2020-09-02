@@ -3,9 +3,10 @@ import axios from 'axios'
 import './App.css'
 
 
-const Render_multiple = ({country}) => {
+const Render_multiple = (props) => {
+  
   return (
-    <li>{country.name}</li>
+    <li>{props.country.name} <button onClick={() => props.buttoni(props.country)}>Show</button></li>
   )
 }
 
@@ -44,8 +45,7 @@ const RenderCountry = ({country}) => {
 
 const Countries = (props) => {
 
-  
-  
+
   if (props.countries.length === 1){
     return (
       <div>
@@ -55,12 +55,12 @@ const Countries = (props) => {
   }
 
   else if (props.countries.length <= 10){
-    console.log(props.countries.length)
+    
     return (
       <div>
         <ul>
           {props.countries.map(info => 
-          <Render_multiple key={info.name} country={info} />
+          <Render_multiple key={info.name} country={info} buttoni={props.buttoni}/>
           )}
         </ul>
       </div>
@@ -76,6 +76,7 @@ const Countries = (props) => {
 }
 
 const Filter = (props) => {
+  console.log(props.handleFilterChange)
   return (
     <div>
         find countries 
@@ -90,10 +91,8 @@ const Filter = (props) => {
 
 
 const App = () => {
-  const [ persons, setPersons] = useState([]) 
+
   const [ countries, setCountries] = useState([])
-  const [ newName, setNewName ] = useState('')
-  const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
   
 
@@ -110,10 +109,13 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  const buttonFilterChange = (props) =>{
+    setFilter(props.name)
+  }
+
   //toimii, ebin
   const filterItems = () => {
-    //console.log(countries)
-    //console.log(filter)
+
     return countries.filter(country => 
       country.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
   }
@@ -123,18 +125,11 @@ const App = () => {
       
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       
-      <Countries countries={filterItems()} />
+      <Countries countries={filterItems()} buttoni={buttonFilterChange} />
     </div>
   )
 
 }
-/**<Filter filter={filter} handleFilterChange={handleFilterChange} />
 
-      <h2>Add a new</h2>
-      <AddNew addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} 
-      newNumber={newNumber} handleNumberChange={handleNumberChange} />
-      <h2>Numbers</h2>
-      
-      <Persons persons={filterItems()} /> */
 export default App
 
