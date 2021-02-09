@@ -1,2 +1,2 @@
-# fso_palautukset
-Repo Full Stack Openin palautuksia varten
+# Full_stack_open
+Repository for full stack open exercises
