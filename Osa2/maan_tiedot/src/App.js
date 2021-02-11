@@ -45,7 +45,7 @@ const RenderCountry = ({country}) => {
 
 const Countries = (props) => {
 
-
+  //if only one country matches the search criteria, show information of that country
   if (props.countries.length === 1){
     return (
       <div>
@@ -95,7 +95,7 @@ const App = () => {
   const [ countries, setCountries] = useState([])
   const [ filter, setFilter] = useState('')
   
-
+  //retrieve data of the countries from the API
   useEffect(() =>{
     axios.get('https://restcountries.eu/rest/v2/all').then(response => (
       setCountries(response.data)
@@ -113,7 +113,7 @@ const App = () => {
     setFilter(props.name)
   }
 
-  //toimii, ebin
+  //filter countries
   const filterItems = () => {
 
     return countries.filter(country => 
