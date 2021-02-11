@@ -1,3 +1,6 @@
+This program can be used to search for people in the contact list and add new people to it.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
