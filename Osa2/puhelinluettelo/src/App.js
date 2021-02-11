@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 
-
+//render one person from the phonebook to the screen
 const Render = ({person}) => {
   return (
     <li>{person.name} {person.number}</li>
@@ -66,6 +66,7 @@ const App = () => {
   const [ filter, setFilter] = useState('')
   
 
+  //retrieve contacts stored in db.json
   useEffect(() =>{
     axios.get('http://localhost:3001/persons').then(response => (
       setPersons(response.data)
@@ -73,6 +74,8 @@ const App = () => {
       )
   }, [])
 
+
+  //add one person to the phonebook
   const addPerson = (event) =>{
     event.preventDefault()
 
@@ -107,7 +110,7 @@ const App = () => {
     setFilter(event.target.value)
   }
 
-  //toimii, ebin
+  //filters phonebook contacts by contact name
   const filterItems = () => {
     console.log(persons)
     console.log(filter)
