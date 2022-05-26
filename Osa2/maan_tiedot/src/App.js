@@ -6,14 +6,15 @@ import './App.css'
 const Render_multiple = (props) => {
   
   return (
-    <li>{props.country.name} <button onClick={() => props.buttoni(props.country)}>Show</button></li>
+    <li>{props.country.name.common} <button onClick={() => props.buttoni(props.country)}>Show</button></li>
   )
 }
 
 
 const Languages = ({language}) =>{
+  
   return (
-    <li>{language.name}</li>
+    <li>{language}</li>
   )
 }
 
@@ -21,7 +22,7 @@ const RenderCountry = ({country}) => {
   return (
     <div>
       <h2>
-        {country.name}
+        {country.name.common}
       </h2>
       
       <div>capital {country.capital}</div>
@@ -30,13 +31,14 @@ const RenderCountry = ({country}) => {
       <h3>languages</h3>  
       
       <ul>
-        {country.languages.map(language =>
-          <Languages key={language.name} language={language}/>
+        {Object.values(country.languages).map(language =>
+          <Languages key={language} language={language}/>
         )}
       </ul>
 
       <div>
-        <img src={country.flag} alt='flag' className='Flag'/>
+        
+        <img src={Object.values(country.flags)[0]} alt='flag'/>
       </div>
 
     </div>
@@ -60,7 +62,7 @@ const Countries = (props) => {
       <div>
         <ul>
           {props.countries.map(info => 
-          <Render_multiple key={info.name} country={info} buttoni={props.buttoni}/>
+          <Render_multiple key={info.name.common} country={info} buttoni={props.buttoni}/>
           )}
         </ul>
       </div>
@@ -97,7 +99,7 @@ const App = () => {
   
   //retrieve data of the countries from the API
   useEffect(() =>{
-    axios.get('https://restcountries.eu/rest/v2/all').then(response => (
+    axios.get('https://restcountries.com/v3.1/all').then(response => (
       setCountries(response.data)
       
     )
@@ -117,7 +119,7 @@ const App = () => {
   const filterItems = () => {
 
     return countries.filter(country => 
-      country.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+      country.name.common.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
   }
 
   return (
@@ -132,4 +134,3 @@ const App = () => {
 }
 
 export default App
-
