@@ -56,6 +56,7 @@ const Countries = (props) => {
     )
   }
 
+  //If multiple countires match the searc criteria, then show those countries, max. 10
   else if (props.countries.length <= 10){
     
     return (
@@ -70,6 +71,7 @@ const Countries = (props) => {
       
     
   }
+  //If search criteria matches more than 10 countries
   return (
     <div>
       Too many matches, specify another filter
