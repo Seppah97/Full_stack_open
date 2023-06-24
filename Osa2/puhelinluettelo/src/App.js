@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-
+import React, { useState, useEffect } from 'react';
+import communication from './communication';
+import "./App.css"
 
 //render one person from the phonebook to the screen
-const Render = ({person}) => {
+const Render = ({person, deletePerson}) => {
   return (
-    <li>{person.name} {person.number}</li>
+    <li>{person.name} {person.number} <button onClick={() => deletePerson(person.id)}>Delete</button></li>
   )
 }
 
@@ -14,9 +14,21 @@ const Persons = (props) => {
     <div>
       <ul>
         {props.persons.map(info => 
-        <Render key={info.name} person={info} />
+        <Render key={info.name} person={info} deletePerson={props.deletePerson} />
         )}
       </ul>
+    </div>
+  )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="message">
+      {message}
     </div>
   )
 }
@@ -64,11 +76,13 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
+  const [alertMessage, setAlertMessage] = useState(null)
+  
   
 
   //retrieve contacts stored in db.json
   useEffect(() =>{
-    axios.get('http://localhost:3001/persons').then(response => (
+    communication.getAll().then(response => (
       setPersons(response.data)
     )
       )
@@ -79,11 +93,18 @@ const App = () => {
   const addPerson = (event) =>{
     event.preventDefault()
 
-    const names = persons.map(person => person.name)
+    //const names = persons.map(person => (person.name, person.id))
 
-    
-    if(names.find(name => name===newName) === newName){
-      alert(`${newName} is already added to phonebook`)
+
+    const findPerson = (name) => persons.find(person => person.name === name)
+
+
+    if(findPerson(newName) !== undefined){
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        const id = findPerson(newName).id
+        updatePerson(newName, newNumber , id)
+      }
+      
     }
 
     else{
@@ -91,11 +112,70 @@ const App = () => {
         name: newName,
         number: newNumber,
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+
+      communication.addPerson(personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+
+          setAlertMessage(`Added ${newName}`)
+
+          setTimeout(() => {
+            setAlertMessage(null)
+          }, 3000)
+
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+  const updatePerson = (name, number, id) => {
+    const personObject = {
+      name: name,
+      number: number,
+    }
+
+    communication.updatePerson(id, personObject)
+        .then(response => {
+          setPersons(persons.map(person => person.id !== id ? person : response.data))
+          setAlertMessage(`Updated number of ${name}`)
+
+          setTimeout(() => {
+            setAlertMessage(null)
+          }, 3000)
+
+          setNewName('')
+          setNewNumber('')
+        })
+
+
+  }
+
+  const deletePerson = (id) => {
+    
+    const findName = (idnum) => persons.find(person => person.id === idnum)
+
+    const name = findName(id).name
+
+    if (window.confirm(`Delete ${name} ?`)){
+      communication.deletePerson(id)
+      .then(() => {
+        console.log("Person deleted successfully")
+
+        setAlertMessage(`Deleted ${name}`)
+
+        setTimeout(() => {
+          setAlertMessage(null)
+        }, 3000)
+        
+        communication.getAll().then(response => (
+          setPersons(response.data)
+        ))
+      })
     }
     
+      
+
   }
 
   const handleNameChange = (event) => {
@@ -110,6 +190,8 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  
+
   //filters phonebook contacts by contact name
   const filterItems = () => {
     console.log(persons)
@@ -121,6 +203,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={alertMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
 
       <h2>Add a new</h2>
@@ -128,7 +211,7 @@ const App = () => {
       newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       
-      <Persons persons={filterItems()} />
+      <Persons persons={filterItems()} deletePerson={deletePerson}/>
 
     </div>
   )
